@@ -1,42 +1,91 @@
 <?php
-<!doctype html>
-<html lang="en">
+include('url.php');
+include('getInfo.php');
+?>
+
+<!DOCTYPE html>
+<html>
 <head>
     <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Pokédex</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
-    <title>AJAX-Pokedex</title>
+    <link rel="stylesheet" type="text/css" media="screen" href="style.css">
+    <link rel="icon" type="image/png" href="fav-ic/pokeball.png"/>
 </head>
-<body border="2em solid black">
+<body>
+<h1>Pokedex</h1>
+<form class="formSearch" action="" method="get">
+    <input class="input" type="text" name="pokemon" placeholder="Search any Pokemon">
+    <input class="submitfirst" value="Search" type="submit">
+</form>
+<!--
+<form class="formDisplay"action="" method="get">
+    <input class ="input" type="number" name="displaypokemon" placeholder="How many pokemon you wanna display">
+    <input class ="submitfirst" value="Display" type="submit">
+</form>
+-->
+<div class="list-pokemon">
 
-<span id="target"></span>
-<div class="poke_box">
-</div>
-<div class="child-to-body box">
-    <input type="text" id="Name" size="20" height="10" value="charmander" title="please enter the pokemon you want to search or it's ID number">
-    <label for="id" style="top: 50px; left:50px"></label><div id="id" style="top: 50px; left:20px"></div>
-    <label for="abilities" style="top: 65px; left:40px"></label><div id="abilities" style="top: 80px; left:50px"></div>
-    <label for="moves" style="top: 160px; left:20px"></label><div id="moves" style="top: 160px; left:50px"></div>
-    <div class="pokeball">
-        <div class="pokeball__button" id="pokeball__button">
+    <!-- Pokémon display 151 pokémon ----------------------------------------------- -->
+    <?php foreach ($pokemon as $_pokemon): ?>
+        <div class="list-item-pokemon">
+            <p class="pokeid"><?= pokemonId($_pokemon->name, 1) ?>.</p>
+            <div class="sprites-container">
+                <img class="sprite" src="<?= pokemonSprite($_pokemon->name, 2, 0) ?>">
+            </div>
+            <p class="pokename"><?= $_pokemon->name ?></p>
+            <p class="poketype">Type: <?= pokemonType($_pokemon->name, 3, 1) ?></p>
         </div>
-    </div>
 
+        <!-- Pokémon Pannel on click ----------------------------------------------- -->
+        <div class="pokeinfo">
+            <h2>Pokémon Information</h2>
+            <p class="pokeinfoname"><?= $_pokemon->name ?></p>
+            <p class="pokeinfotype"><strong>Type : </strong><?= pokemonType($_pokemon->name, 3, 1) ?><br/></p>
+            <p class="pokeinfoabilities"><strong>Abilities : </strong><?= pokemonAbilities($_pokemon->name, 4, 1) ?></p>
+            <img class="infosprite" src="<?= pokemonSprite($_pokemon->name, 2, 0) ?>">
+            <img class="infosprite2" src="<?= pokemonSpriteShiny($_pokemon->name, 3, 0) ?>">
+            <p class="close-button">Close information</p>
+            <p class="pokeinfodescription"><strong>Description
+                    : </strong><?= pokemonDescription($_pokemon->name, 4, 1) ?></p>
+            <p class="pokeheight"><strong>Height : </strong><?= pokemonHeight($_pokemon->name, 4, 1) ?>0cm <br/></p>
+            <p class="pokeweight"><strong>Weight : </strong><?= pokemonWeight($_pokemon->name, 4, 1) ?>Kg</p>
+            <p class="shinyform">Shiny <?= $_pokemon->name ?></p>
+        </div>
+    <?php endforeach; ?>
+
+    <!-- Pokémon Pannel Search ----------------------------------------------- -->
+    <?php if (!empty($_GET['pokemon'])): ?>
+        <div class="pokeinfo pokesearch" style="display : flex">
+            <h2>Pokémon Information</h2>
+            <p class="pokeinfoname"><?= $searchedPokemon ?></p>
+            <p class="pokeinfotype"><strong>Type : </strong><?= pokemonType($searchedPokemon, 3, 1) ?><br/></p>
+            <p class="pokeinfoabilities"><strong>Abilities : </strong><?= pokemonAbilities($searchedPokemon, 4, 1) ?>
+            </p>
+            <img class="infosprite" src="<?= pokemonSprite($searchedPokemon, 2, 0) ?>">
+            <img class="infosprite2" src="<?= pokemonSpriteShiny($searchedPokemon, 3, 0) ?>">
+            <p class="close-button2">Close information</p>
+            <p class="pokeinfodescription"><strong>Description
+                    : </strong><?= pokemonDescription($searchedPokemon, 4, 1) ?></p>
+            <p class="pokeheight"><strong>Height : </strong><?= pokemonHeight($searchedPokemon, 4, 1) ?>0cm <br/></p>
+            <p class="pokeweight"><strong>Weight : </strong><?= pokemonWeight($searchedPokemon, 4, 1) ?>Kg</p>
+            <p class="shinyform">Shiny <?= $searchedPokemon ?></p>
+
+            <!-- Close the $searchedPokemon Pannel ----------------------------------------------- -->
+            <script>
+                const closeButton2 = document.querySelector('.close-button2')
+                const infopannel2 = document.querySelector(".pokesearch")
+
+                closeButton2.addEventListener(
+                    'click', () => {
+                        infopannel2.style.display = 'none'
+                    })
+            </script>
+
+        </div>
+    <?php endif; ?>
 </div>
-
-
-
-
-
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
-        crossorigin="anonymous"></script>
-<!--<script src="pokedex.js"></script>-->
 <script src="ajax-pokedex.js"></script>
 </body>
 </html>
