@@ -1,44 +1,34 @@
 <?php
+//xdebug_break();
+//phpinfo();
 
-
-$pokeName = $_POST['pokemonName'];
-//echo $pokeName;
+// $pokeName = $_POST['pokemonName'];
+if(!isset($_POST['pokemonName'])){
+    $pokeName = "charmander";
+} else {
+    $pokeName = $_POST['pokemonName'];
+}
 $pokeURL = "https://pokeapi.co/api/v2/pokemon/$pokeName";
-//echo $pokeURL;
-//$data = file_get_contents($pokeURL);
 $data = file_get_contents($pokeURL);
 $decoded_Data = json_decode($data, true);
-//echo "<br>";
-//echo "$ID $Name";
-//echo $Species;
-//echo $decoded_Data[0];
-//var_dump($decoded_Data);
 $Name = $decoded_Data['name'];
 $ID = $decoded_Data['id'];
-//echo $Name;
-//echo "<br>";
-//echo $ID;
-//echo "<br>";
+$Name= "$Name($ID)";
+// echo $Name;
 $image = $decoded_Data['sprites']['front_default'];
-//echo $image;
-//$abilities = $decoded_Data['abilities[0].ability.name'];
-//array_walk($abilities, '');
-//var_dump($abilities);
+
 $abilityName =  $decoded_Data['abilities'];
-//print_r($abilityName);
 for ($i = 0; $i < count($abilityName); $i++) {
-    echo $abilityName[$i]['ability']['name'];
-    echo '<br>';
+    $Name .= $abilityName[$i]['ability']['name'] . "(=ability), ";
+// //    echo ', ';
+// //    echo '<br>';
 }
 $moves = $decoded_Data['moves'];
 for ($i = 0; $i < count($moves); $i++) {
-    echo $moves[$i]['move']['name'];
-    echo '<br>';
+    $Name .= $moves[$i]['move']['name'] . "(=move), ";
+// //    echo ', ';
+// //    echo '<br>';
 }
-
-
-
-
 ?>
 <!doctype html>
 <html lang="en">
@@ -52,9 +42,10 @@ for ($i = 0; $i < count($moves); $i++) {
     <title>AJAX-Pokedex</title>
 </head>
 <body border="2em solid black">
-
 <img src='<?php echo $image; ?>' alt="1" title="<?php echo $Name; ?>">
+<h6><?php print_r($Name); ?></h6>
 <span id="target">
+
 </span>
 <div class="poke_box">
 </div>
@@ -72,7 +63,6 @@ for ($i = 0; $i < count($moves); $i++) {
     </div>
 
 </div>
-
 
 
 
